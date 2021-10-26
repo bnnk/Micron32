@@ -1,0 +1,46 @@
+name: Get Android APK
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source
+        uses: actions/checkout@v2
+
+      - name: setup java sdk
+        uses: actions/setup-java@v1
+        with:
+          java-version: '9.0.4'
+
+      - name: setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Install app dependencies
+        run: yarn install
+
+      - name: build the app
+        run: yarn build
+
+      - name: remove existing folder if there 
+        run: rm -rf android # eg. /home/runner/work/Bookie/Bookie/android
+
+      - name: Add to android
+        run: yarn cap add android
+
+      - name: sync with source
+        run: yarn cap sync
+
+      - name: Generate the Android App Apk
+        working-directory: android # eg. /home/runner/work/Bookie/Bookie/android 
+        run: bash ./gradlew assembleDebug --stacktrace
+
+      - name: Upload dev APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: app-dev
+          path: android/app/build/outputs/apk/debug/app-debug.apk
