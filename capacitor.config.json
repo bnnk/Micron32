@@ -1,0 +1,8 @@
+{
+  "appId": "com.shrinandhan.myapp",
+  "appName": "myapp",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build",
+  "cordova": {}
+}
