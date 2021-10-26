@@ -30,10 +30,10 @@ jobs:
         run: rm -rf android # eg. /home/runner/work/Bookie/Bookie/android
 
       - name: Add to android
-        run: yarn cap add android
+        run: yarn ionic capacitor add android
 
       - name: sync with source
-        run: yarn cap sync
+        run: yarn ionic capacitor sync
 
       - name: Generate the Android App Apk
         working-directory: android # eg. /home/runner/work/Bookie/Bookie/android 
