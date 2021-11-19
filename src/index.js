@@ -1,39 +1,41 @@
-import "./styles.css";
-
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { useInputValue, useTodos } from "./custom-hooks";
+import HeaderContainer from "./MainContainer";
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import routes from "./routes";
+import { Container, createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+import { initDB } from 'react-indexed-db';
+import { DBConfig } from "./dbapi";
 
-import Layout from "./components/Layout";
+initDB(DBConfig)
 
-import AddTodo from "./components/AddTodo";
-import TodoList from "./components/TodoList";
+function App(){
+  const [dark, setDark] = React.useState(false)
+  const theme = createMuiTheme({
+    palette: {
+      type: dark ? 'dark' : 'light',
+    },
+  });
+  return <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <HashRouter>
+    <HeaderContainer>
+      <Container fluid>
+          <br />
+          <br />
+          <br />
+          <br />
+          
+          <Routes>
+              { routes.map((route) => {
+                  return  <Route {...route}/>
+              }) }
+          </Routes>
+      </Container>
+    </HeaderContainer>
+    </HashRouter>
+  </ThemeProvider>
+}
 
-const TodoApp = React.memo(() => {
-  const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
-  const { todos, addTodo, checkTodo, removeTodo } = useTodos();
-
-  const clearInputAndAddTodo = () => {
-    clearInput();
-    addTodo(inputValue);
-  };
-
-  return (
-    <Layout>
-      <AddTodo
-        inputValue={inputValue}
-        onInputChange={changeInput}
-        onButtonClick={clearInputAndAddTodo}
-        onInputKeyPress={(event) => keyInput(event, clearInputAndAddTodo)}
-      />
-      <TodoList
-        items={todos}
-        onItemCheck={checkTodo}
-        onItemRemove={removeTodo}
-      />
-    </Layout>
-  );
-});
-
-ReactDOM.render(<TodoApp />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));
