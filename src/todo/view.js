@@ -6,13 +6,16 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { Card } from "@material-ui/core";
-import { useLiveQuery } from "dexie-react-hooks";
-import { DBConfig } from "../dbapi";
+import { Card, Checkbox, ListItemSecondaryAction } from "@material-ui/core";
+import { db } from "../dbapi";
 
-const db = new window.Dexie( DBConfig.name )
 export default function TodoView() {
-  const todos = useLiveQuery( db.todo.toArray() )
+  const [todos, setTodos] = React.useState(null)
+  const todoObserver = window.Dexie.liveQuery( () => db.todo.toArray() )
+  todoObserver.subscribe({
+    next: result => { console.log("Got result:", result); setTodos(result) },
+    error: error => console.error(error)
+  })
   return (
     <Card variant="outlined">
       <List>
@@ -20,11 +23,16 @@ export default function TodoView() {
           <>
             <ListItem>
               <ListItemAvatar>
-                <Avatar>
+                <Avatar color="secondary">
                   {todo.done ? <CheckCircleIcon /> : <CancelIcon />}
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={todo.desc} />
+              <ListItemText primary={todo.what2do} />
+              <ListItemSecondaryAction>
+                <Checkbox checked={todo.done} onChange={(e) => {
+                  db.todo.update(todo.id, { done: e.target.checked })
+                }}/>
+              </ListItemSecondaryAction>
             </ListItem>
           </>
         )))}

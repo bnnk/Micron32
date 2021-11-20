@@ -7,8 +7,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 import { TextField } from "@material-ui/core";
-import { useIndexedDB } from "react-indexed-db";
-import Emitter from "../eventman";
+import { db } from "../dbapi";
 
 const useStyles = makeStyles({
   root: {
@@ -19,7 +18,6 @@ const useStyles = makeStyles({
 export default function TodoForm() {
   const classes = useStyles();
   const [tbox, setTBox] = React.useState("no text given.")
-  const dbapi = useIndexedDB("todo")
   return (
     <Card className={classes.root} variant="outlined">
       <CardContent>
@@ -36,10 +34,10 @@ export default function TodoForm() {
           variant="contained"
           startIcon={<AddToPhotosIcon />}
           onClick={(e) => {
-            dbapi.add({
-                desc: tbox,
+            db.todo.add({
+                what2do: tbox,
                 checked: false
-            }).then(() => Emitter.emit("add", undefined))
+            })
           }}
         >
           Add

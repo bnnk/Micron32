@@ -5,10 +5,6 @@ import HeaderContainer from "./MainContainer";
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import routes from "./routes";
 import { Container, createMuiTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
-import { initDB } from 'react-indexed-db';
-import { DBConfig } from "./dbapi";
-
-initDB(DBConfig)
 
 function App(){
   const [dark, setDark] = React.useState(false)
